@@ -1,0 +1,30 @@
+Tabuľky:
+
+Osoba -
+
+osoba_id (PK)
+meno
+priezvisko
+datum_narodenia
+
+este dalsie udaje podla potreby
+
+Vakcína -
+
+vakcina_id (PK)
+nazov
+typ (napr. mRNA, adenovírusová, atď.)
+
+dalies udaje podla potreby
+
+Očkovanie - 
+
+ockovanie_id (PK)
+osoba_id (FK na tabuľku Osoba)
+vakcina_id (FK na tabuľku Vakcína)
+datum_ockovania
+
+dalsie udaje ako napriklad cislo davky
+
+Vzťahy:
+Tabuľka Očkovanie obsahuje FK na tabuľky Osoba a Vakcína, čo zabezpečuje väzbu medzi osobami a ich očkovaním konkrétnymi vakcínami.

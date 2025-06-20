@@ -1,0 +1,30 @@
+/* Reset základného marginu a paddingu */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #f4f4f4;
+    color: #333;
+    overflow: hidden;
+    overflow-y: scroll;
+}
+
+a {
+    text-decoration: none !important;
+}
+
+a:hover,
+a:focus {
+    text-decoration: none !important;
+}
+
+
+body::-webkit-scrollbar {
+    display: none; /* Skryje scrollbar v prehliadačoch, ktoré podporujú Webkit (Chrome, Safari, Edge) */
+}
+
+
+

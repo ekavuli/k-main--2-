@@ -1,0 +1,224 @@
+<div class="container">
+  <div class="header-section">
+    <h2>Vaccination Records Search</h2>
+    <p class="subtitle">Search and manage vaccination records with advanced filtering</p>
+  </div>
+  
+  <!-- Enhanced Filter Section -->
+  <div class="filter-section">
+    <div class="filter-row">
+      <div class="search-group">
+        <label for="search">Search:</label>
+        <input 
+          type="text" 
+          id="search"
+          placeholder="Search by name or vaccine..." 
+          (input)="onSearchInput($event)"
+          [value]="searchTerm"
+          class="search-input">
+      </div>
+      
+      <div class="filter-group">
+        <label for="vaccine-filter">Filter by vaccine:</label>
+        <select 
+          id="vaccine-filter"
+          [(ngModel)]="vaccineFilter" 
+          (ngModelChange)="applyFilters()"
+          class="filter-select">
+          <option value="">All vaccines</option>
+          <option *ngFor="let vaccine of vaccines" [value]="vaccine.nazov">
+            {{vaccine.nazov}} ({{vaccine.vyrobca}})
+          </option>
+        </select>
+      </div>
+
+      <div class="date-group">
+        <label for="date-from">Date from:</label>
+        <input 
+          type="date" 
+          id="date-from"
+          [(ngModel)]="dateFrom"
+          (ngModelChange)="loadRecords()"
+          class="date-input">
+      </div>
+
+      <div class="date-group">
+        <label for="date-to">Date to:</label>
+        <input 
+          type="date" 
+          id="date-to"
+          [(ngModel)]="dateTo"
+          (ngModelChange)="loadRecords()"
+          class="date-input">
+      </div>
+      
+      <button (click)="resetFilters()" class="reset-btn">Reset</button>
+    </div>
+  </div>
+
+  <!-- Add New Record Button -->
+  <div class="action-bar" *ngIf="auth.isLoggedIn()">
+    <button (click)="openAddModal()" class="btn-primary">Add New Vaccination</button>
+    <button (click)="loadRecords()" class="btn-secondary">Refresh Data</button>
+  </div>
+
+  <!-- Results Summary -->
+  <div class="results-info">
+    <div class="results-count">
+      Showing <strong>{{results.length}}</strong> of <strong>{{allRecords.length}}</strong> records
+    </div>
+  </div>
+
+  <!-- Loading and Error States -->
+  <div *ngIf="loading" class="loading">
+    <div class="spinner-large"></div>
+    <p>Loading vaccination records...</p>
+  </div>
+  <div *ngIf="error" class="error">
+    <h3>Error Loading Data</h3>
+    <p>{{error}}</p>
+    <button (click)="loadRecords()" class="retry-btn">Retry</button>
+  </div>
+
+  <!-- Main Table -->
+  <div class="table-container" *ngIf="!loading && !error">
+    <table class="vaccination-table">
+      <thead>
+        <tr>
+          <th (click)="changeSorting('name')" class="sortable">
+            Name {{getSortIndicator('name')}}
+          </th>
+          <th (click)="changeSorting('vaccine')" class="sortable">
+            Vaccine {{getSortIndicator('vaccine')}}
+          </th>
+          <th (click)="changeSorting('date')" class="sortable">
+            Date {{getSortIndicator('date')}}
+          </th>
+          <th (click)="changeSorting('dose')" class="sortable">
+            Dose {{getSortIndicator('dose')}}
+          </th>
+          <th *ngIf="auth.isLoggedIn()">Contact</th>
+          <th *ngIf="auth.isLoggedIn()">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let record of results; trackBy: trackByRecordId" class="record-row">
+          <td>
+            <div class="person-cell">
+              <strong>{{record.osobaPriezvisko}}, {{record.osobaMeno}}</strong>
+              <small>ID: {{record.osobaId}}</small>
+            </div>
+          </td>
+          <td>
+            <div class="vaccine-cell">
+              <span class="vaccine-name">{{record.vakcinaNazov}}</span>
+              <span class="vaccine-type">({{record.vakcinaTyp}})</span>
+            </div>
+          </td>
+          <td>{{record.datumAplikacie | date:'dd.MM.yyyy'}}</td>
+          <td>
+            <span class="dose-badge dose-{{record.poradieDavky}}">{{record.poradieDavky}}</span>
+          </td>
+          <td *ngIf="auth.isLoggedIn()">
+            <div class="contact-actions">
+              <button class="contact-btn phone-btn" title="Call">Call</button>
+              <button class="contact-btn email-btn" title="Email">Email</button>
+            </div>
+          </td>
+          <td *ngIf="auth.isLoggedIn()">
+            <div class="admin-actions">
+              <button class="action-btn edit-btn" (click)="editRecord(record)" title="Edit">Edit</button>
+              <button class="action-btn delete-btn" (click)="deleteRecord(record)" title="Delete">Delete</button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <div *ngIf="results.length === 0 && !loading && !error" class="no-results">
+    <div class="no-results-icon">No Results</div>
+    <h3>No records found</h3>
+    <p>Try adjusting your search criteria or filters</p>
+    <button (click)="resetFilters()" class="reset-btn">Reset Filters</button>
+  </div>
+</div>
+
+<!-- Add/Edit Modal -->
+<div class="modal-overlay" *ngIf="showEditModal || showAddModal" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>{{showAddModal ? 'Add New' : 'Edit'}} Vaccination Record</h3>
+      <button class="close-btn" (click)="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <form (ngSubmit)="saveRecord()" #editForm="ngForm">
+        <div class="form-group" *ngIf="showAddModal">
+          <label>Person:</label>
+          <select [(ngModel)]="editingRecord.osobaId" name="osobaId" class="form-control" required>
+            <option value="">Select Person</option>
+            <option *ngFor="let person of people" [value]="person.id">
+              {{person.meno}} {{person.priezvisko}}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group" *ngIf="showEditModal">
+          <label>Person:</label>
+          <select [(ngModel)]="editingRecord.osobaId" name="osobaId" class="form-control" required>
+            <option value="">Select Person</option>
+            <option *ngFor="let person of people" [value]="person.id">
+              {{person.meno}} {{person.priezvisko}}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group" *ngIf="showAddModal">
+          <label>Vaccine:</label>
+          <select [(ngModel)]="editingRecord.vakcinaId" name="vakcinaId" class="form-control" required>
+            <option value="">Select Vaccine</option>
+            <option *ngFor="let vaccine of vaccines" [value]="vaccine.id">
+              {{vaccine.nazov}} ({{vaccine.vyrobca}})
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group" *ngIf="showEditModal">
+          <label>Vaccine:</label>
+          <select [(ngModel)]="editingRecord.vakcinaId" name="vakcinaId" class="form-control" required>
+            <option value="">Select Vaccine</option>
+            <option *ngFor="let vaccine of vaccines" [value]="vaccine.id">
+              {{vaccine.nazov}} ({{vaccine.vyrobca}})
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Date of Application:</label>
+          <input 
+            type="date" 
+            [(ngModel)]="editingRecord.datumAplikacie" 
+            name="datumAplikacie"
+            class="form-control"
+            required>
+        </div>
+        <div class="form-group">
+          <label>Dose Number:</label>
+          <input 
+            type="number" 
+            [(ngModel)]="editingRecord.poradieDavky" 
+            name="poradieDavky"
+            min="1"
+            class="form-control"
+            required>
+        </div>
+        <div class="modal-actions">
+          <button type="submit" class="btn-primary" [disabled]="!editForm.valid">
+            {{showAddModal ? 'Add' : 'Save Changes'}}
+          </button>
+          <button type="button" class="btn-secondary" (click)="closeModal()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

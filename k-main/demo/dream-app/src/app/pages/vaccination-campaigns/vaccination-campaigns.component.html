@@ -1,0 +1,74 @@
+<div class="campaigns-container">
+  <div class="campaigns-header">
+    <h1>Vaccination Campaigns</h1>
+    <button (click)="showCreateForm = !showCreateForm" class="create-btn">
+      {{ showCreateForm ? 'Cancel' : 'Create New Campaign' }}
+    </button>
+  </div>
+
+  <div *ngIf="showCreateForm" class="create-form">
+    <h2>Create New Campaign</h2>
+    <form (ngSubmit)="createCampaign()">
+      <div class="form-group">
+        <label for="name">Campaign Name:</label>
+        <input type="text" id="name" [(ngModel)]="newCampaign.name" name="name" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="description">Description:</label>
+        <textarea id="description" [(ngModel)]="newCampaign.description" name="description"></textarea>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="startDate">Start Date:</label>
+          <input type="date" id="startDate" [(ngModel)]="newCampaign.startDate" name="startDate" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="endDate">End Date:</label>
+          <input type="date" id="endDate" [(ngModel)]="newCampaign.endDate" name="endDate" required>
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="targetGroup">Target Group:</label>
+          <input type="text" id="targetGroup" [(ngModel)]="newCampaign.targetGroup" name="targetGroup">
+        </div>
+        
+        <div class="form-group">
+          <label for="vaccineType">Vaccine Type:</label>
+          <input type="text" id="vaccineType" [(ngModel)]="newCampaign.vaccineType" name="vaccineType">
+        </div>
+      </div>
+      
+      <button type="submit" [disabled]="loading" class="submit-btn">
+        {{ loading ? 'Creating...' : 'Create Campaign' }}
+      </button>
+    </form>
+  </div>
+
+  <div *ngIf="error" class="error-message">{{ error }}</div>
+  
+  <div *ngIf="loading && !showCreateForm" class="loading">Loading campaigns...</div>
+  
+  <div class="campaigns-list">
+    <div *ngFor="let campaign of campaigns" class="campaign-card">
+      <h3>{{ campaign.name }}</h3>
+      <p class="description">{{ campaign.description }}</p>
+      <div class="campaign-details">
+        <span class="date-range">{{ campaign.startDate | date }} - {{ campaign.endDate | date }}</span>
+        <span class="target-group" *ngIf="campaign.targetGroup">Target: {{ campaign.targetGroup }}</span>
+        <span class="vaccine-type" *ngIf="campaign.vaccineType">Vaccine: {{ campaign.vaccineType }}</span>
+      </div>
+      <div class="campaign-actions">
+        <button (click)="deleteCampaign(campaign.id)" class="delete-btn">Delete</button>
+      </div>
+    </div>
+  </div>
+  
+  <div *ngIf="campaigns.length === 0 && !loading" class="no-campaigns">
+    No vaccination campaigns found.
+  </div>
+</div>

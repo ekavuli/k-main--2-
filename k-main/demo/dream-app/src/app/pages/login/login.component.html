@@ -1,0 +1,35 @@
+<div class="login-container">
+  <h2>Login</h2>
+  <form (ngSubmit)="login()">
+    <div class="form-group">
+      <label for="username">Username</label>
+      <input
+        [(ngModel)]="username"
+        name="username"
+        id="username"
+        placeholder="Username"
+        required
+        [disabled]="loading"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input
+        [(ngModel)]="password"
+        name="password"
+        id="password"
+        type="password"
+        placeholder="Password"
+        required
+        [disabled]="loading"
+      />
+    </div>
+
+    <button type="submit" [disabled]="loading">
+      {{ loading ? 'Logging in...' : 'Login' }}
+    </button>
+
+    <div class="error" *ngIf="error">{{ error }}</div>
+  </form>
+</div>

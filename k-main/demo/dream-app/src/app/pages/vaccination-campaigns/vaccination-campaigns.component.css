@@ -1,0 +1,209 @@
+.campaigns-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  margin-top: 80px;
+}
+
+.campaigns-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.campaigns-header h1 {
+  color: #fff;
+  margin: 0;
+}
+
+.create-btn {
+  background-color: #424242;
+  color: #fff;
+  border: 1px solid #616161;
+  padding: 0.8rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.3s;
+}
+
+.create-btn:hover {
+  background-color: #616161;
+}
+
+.create-form {
+  background-color: #2c2c2c;
+  padding: 2rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  border: 1px solid #424242;
+}
+
+.create-form h2 {
+  color: #fff;
+  margin-bottom: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.form-group label {
+  display: block;
+  color: #e0e0e0;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 0.8rem;
+  background-color: #1e1e1e;
+  border: 1px solid #424242;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 1rem;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.submit-btn {
+  background-color: #fff;
+  color: #212121;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.3s;
+}
+
+.submit-btn:hover {
+  background-color: #e0e0e0;
+}
+
+.submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.campaigns-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 1.5rem;
+}
+
+.campaign-card {
+  background-color: #2c2c2c;
+  border: 1px solid #424242;
+  border-radius: 8px;
+  padding: 1.5rem;
+  transition: transform 0.2s;
+}
+
+.campaign-card:hover {
+  transform: translateY(-2px);
+}
+
+.campaign-card h3 {
+  color: #fff;
+  margin: 0 0 1rem 0;
+  font-size: 1.2rem;
+}
+
+.description {
+  color: #e0e0e0;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.campaign-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.date-range,
+.target-group,
+.vaccine-type {
+  color: #bdbdbd;
+  font-size: 0.9rem;
+}
+
+.campaign-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.delete-btn {
+  background-color: transparent;
+  color: #fff;
+  border: 1px solid #616161;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.3s;
+}
+
+.delete-btn:hover {
+  background-color: #616161;
+}
+
+.error-message {
+  background-color: #424242;
+  color: #fff;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  border-left: 4px solid #fff;
+}
+
+.loading {
+  text-align: center;
+  color: #bdbdbd;
+  padding: 2rem;
+  font-style: italic;
+}
+
+.no-campaigns {
+  text-align: center;
+  color: #bdbdbd;
+  padding: 3rem;
+  font-style: italic;
+  font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+  .campaigns-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .campaigns-list {
+    grid-template-columns: 1fr;
+  }
+}

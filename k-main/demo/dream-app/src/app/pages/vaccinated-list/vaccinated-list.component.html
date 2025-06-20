@@ -1,0 +1,88 @@
+<div class="container">
+  <h2>Vaccination Records</h2>
+  
+  <!-- Search and Filter Section -->
+  <div class="filter-section">
+    <div class="search-group">
+      <label for="search">Search:</label>
+      <input 
+        type="text" 
+        id="search"
+        placeholder="Search by name or vaccine..." 
+        (input)="onSearchInput($event)"
+        [value]="searchTerm"
+        class="search-input">
+    </div>
+    
+    <div class="filter-group">
+      <label for="vaccine-filter">Filter by vaccine:</label>
+      <select 
+        id="vaccine-filter"
+        [(ngModel)]="vaccineFilter" 
+        (ngModelChange)="applyFilters()"
+        class="filter-select">
+        <option value="">All vaccines</option>
+        <option *ngFor="let vaccine of vaccines" [value]="vaccine.nazov">
+          {{vaccine.nazov}}
+        </option>
+      </select>
+    </div>
+    
+    <button (click)="resetFilters()" class="reset-btn">Reset Filters</button>
+    <button (click)="loadRecords()" class="refresh-btn">Refresh</button>
+  </div>
+
+  <!-- Results Summary -->
+  <div class="results-info">
+    Showing {{filteredRecords.length}} of {{allRecords.length}} records
+  </div>
+
+  <!-- Loading and Error States -->
+  <div *ngIf="loading" class="loading">Loading vaccination records...</div>
+  <div *ngIf="error" class="error">{{error}}</div>
+
+  <!-- Table -->
+  <div class="table-container" *ngIf="!loading && !error">
+    <table class="vaccination-table">
+      <thead>
+        <tr>
+          <th (click)="changeSorting('name')" class="sortable">
+            Name {{getSortIndicator('name')}}
+          </th>
+          <th (click)="changeSorting('vaccine')" class="sortable">
+            Vaccine {{getSortIndicator('vaccine')}}
+          </th>
+          <th (click)="changeSorting('date')" class="sortable">
+            Date {{getSortIndicator('date')}}
+          </th>
+          <th (click)="changeSorting('dose')" class="sortable">
+            Dose {{getSortIndicator('dose')}}
+          </th>
+          <th (click)="changeSorting('id')" class="sortable">
+            Record ID {{getSortIndicator('id')}}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let record of filteredRecords" class="record-row">
+          <td>{{record.osobaPriezvisko}}, {{record.osobaMeno}}</td>
+          <td>
+            <span class="vaccine-name">{{record.vakcinaNazov}}</span>
+            <span class="vaccine-type">({{record.vakcinaTyp}})</span>
+          </td>
+          <td>{{record.datumAplikacie | date:'dd.MM.yyyy'}}</td>
+          <td>
+            <span class="dose-badge">{{record.poradieDavky}}</span>
+          </td>
+          <td>
+            <span class="record-id">{{record.id}}</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <div *ngIf="filteredRecords.length === 0" class="no-results">
+      No vaccination records found matching your criteria.
+    </div>
+  </div>
+</div>

@@ -1,0 +1,27 @@
+<header class="header">
+  <nav class="navbar" id="main-navbar">
+    <div class="nav-container">
+      <a routerLink="/home" class="navbar-brand">Vaccination System</a>
+      
+      <div class="nav-links" id="navLinks">
+        <a routerLink="/home" routerLinkActive="active">Home</a>
+        <a routerLink="/search" routerLinkActive="active">Search Records</a>
+        <ng-container *ngIf="auth.isLoggedIn()">
+          <ng-container *ngIf="auth.isAdmin()">
+            <a routerLink="/admin/add-person" routerLinkActive="active">Add Person</a>
+            <a routerLink="/admin/add-vaccine" routerLinkActive="active">Add Vaccine</a>
+            <a routerLink="/admin/add-vaccination" routerLinkActive="active">Register Vaccination</a>
+          </ng-container>
+        </ng-container>
+      </div>
+      
+      <div class="nav-actions">
+        <ng-container *ngIf="auth.isLoggedIn()">
+          <span class="username">{{ auth.getUsername() }}</span>
+          <button (click)="logout()" class="logout-btn">Logout</button>
+        </ng-container>
+        <a *ngIf="!auth.isLoggedIn()" routerLink="/login" class="login-link">Login</a>
+      </div>
+    </div>
+  </nav>
+</header>
